@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speech to Text</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  #text-output {
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+  <h1>Speech to Text</h1>
+  <button id="start-recognition">Start</button>
+  <div id="text-output"></div>
+
+<script>
+  const startButton = document.getElementById('start-recognition');
+  const outputDiv = document.getElementById('text-output');
+
+  const recognition = new webkitSpeechRecognition() || new SpeechRecognition();
+  recognition.lang = 'en-US';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  recognition.onresult = function(event) {
+    let interimTranscript = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      if (event.results[i].isFinal) {
+        outputDiv.textContent += event.results[i][0].transcript;
+      } else {
+        interimTranscript += event.results[i][0].transcript;
+      }
+    }
+  };
+
+  recognition.onerror = function(event) {
+    console.error('Speech recognition error detected: ' + event.error);
+  };
+
+  startButton.addEventListener('click', function() {
+    recognition.start();
+  });
+</script>
+</body>
+</html>
